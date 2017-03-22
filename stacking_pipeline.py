@@ -124,18 +124,18 @@ for num in bar(range(len(source_names))):
     y_coords = data_cut[0].header['CRPIX2']
 
     #append information to empty lists
-    x_position.append(x_coords)
-    y_position.append(y_coords)
+    #x_position.append(x_coords)
 
-    x_pos = x_position[num]
-    y_pos = y_position[num]
+    #y_position.append(y_coords)
+    #x_pos = x_position[num]
+    #y_pos = y_position[num]
 
     fin_data = data_cut[0].data     
 
 
 
     #make the cutouts
-    cutouts = Cutout2D(fin_data, (x_pos, y_pos), (60, 60), mode = 'partial', fill_value = 0.)
+    cutouts = Cutout2D(fin_data, (x_coords, y_coords), (60, 60), mode = 'partial', fill_value = 0.)
 
     #save the resulting cutouts as fits files
     fits.writeto('Data/Cutouts/'+name+'_'+str(wavelength)+'_cutout.fits', cutouts.data,  clobber = True)
