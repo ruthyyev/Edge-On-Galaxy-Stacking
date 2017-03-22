@@ -1,12 +1,9 @@
 import sep
 from astropy.io import fits
 import matplotlib.pyplot as plt
-from matplotlib import rcParams
 import numpy as np
 import progressbar
 import montage_wrapper
-import reproject
-from reproject import reproject_exact
 import os
 from astropy.nddata.utils import Cutout2D
 
@@ -87,20 +84,13 @@ for num in bar(range(len(source_names))):
         pix_size_arcsec = pix_size * 3600. #converts pixel size from deg to "
         lin_dist = ((dist_list * pix_size_arcsec) / 206265. ) * 1000.
         #find the largest scale in sample, here it is lin_dist[51]
-    
-       
-#3,19,31,60,63,65,73 are furthest away = worse res.
-#at this point, should we remove furthest away objects? test the difference!!
 
 
         max_lin_dist = lin_dist[51] #the furthest away galaxy (with most kpc per pixel)
-        #print max_lin_dist
         scale_factor = max_lin_dist / lin_dist #find ratio to change by
         new_pix_size = pix_size_arcsec * scale_factor #new pixel size for images!
-        #print(new_pix_size)
         
-        
-#print np.max(lin_dist)
+
 
         montage_wrapper.mHdr(str(ra)+', '+str(dec), width, 'Data/Rescaled/'+name+'_SPIRE_'+str(wavelength)+'_rescaled_kpc.txt', pix_size = new_pix_size[num], rotation = angle)
 
@@ -110,7 +100,9 @@ for num in bar(range(len(source_names))):
 #-------------------------------------------------------------------------------
 #MAKE CUT-OUTS OF THE DATA - THE GALAXY AT THE CENTRE
 #-------------------------------------------------------------------------------
-        
+#Here we make cutouts of the galaxies based on the WCS co-ordinates in 
+#their header files. Specify the central co-ordinates and the map size, 
+#as well as cutout 'mode'     
 
 
     #for wavelength in [500]: #change according to wavelength! need to sort this out...
@@ -119,13 +111,6 @@ for num in bar(range(len(source_names))):
     #get the galaxy central pixels from the header files
         x_coords = data_cut[0].header['CRPIX1']
         y_coords = data_cut[0].header['CRPIX2']
-
-    #append information to empty lists
-    #    x_position.append(x_coords)
-    #    y_position.append(y_coords)
-
-     #   x_pos = x_position[num]
-     #   y_pos = y_position[num]
 
         fin_data = data_cut[0].data     
 
@@ -142,6 +127,8 @@ for num in bar(range(len(source_names))):
 #-------------------------------------------------------------------------------
 #STACK THE IMAGES
 #-------------------------------------------------------------------------------
+#Use np.ma.sum to stack the cutouts to one final, stacked image
+
 
 outputs = []
 
