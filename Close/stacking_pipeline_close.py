@@ -14,7 +14,7 @@ os.chdir('/Users/c1541417/Documents/Edge-On2/Close')
 #np.set_printoptions(threshold=np.inf)
 
 bar = progressbar.ProgressBar()
-outputs = []
+
 #------------------------------------------------------------------------------
 #IMPORT REQUIRED CSV DATA FILE
 #------------------------------------------------------------------------------
@@ -41,9 +41,6 @@ pos_angle = [360. - x for x in pos_angle1]
 width = 5.
 
 
-
-cutouts = []
-
 #------------------------------------------------------------------------------
 #IMPORT REQUIRED MAPS + BACKGROUND SUBTRACT
 #------------------------------------------------------------------------------
@@ -58,8 +55,6 @@ for num in bar(range(len(source_names))):
     angle = pos_angle[num]
     
     for wavelength in [250, 350, 500]:
-        x_position = []
-        y_position = []
           
       
         #read in the required data:
@@ -148,31 +143,32 @@ for num in bar(range(len(source_names))):
 #STACK THE IMAGES
 #-------------------------------------------------------------------------------
 
+outputs = []
 
-            
-        image_list = []
-        outputs = []
+for wavelength in [250, 350, 500]:
+
+    image_list = []
+
+    for name in source_names:
 
         try:
             image_list.append(fits.getdata('Data/Cutouts/'+name+'_'+str(wavelength)+'_cutout.fits'))
         except:
             print 'could not find '+name+''
 
-        image_list = [i for i in image_list if i.shape == (60, 60)]
-        image_list = [np.ma.masked_invalid(i) for i in image_list]
+    image_list = [i for i in image_list if i.shape == (60, 60)]
+    image_list = [np.ma.masked_invalid(i) for i in image_list]
 
-        try:
-            outputs.append(np.ma.sum(image_list, axis=0))
-        except:
-            pass
-            
-        plt.figure()
-        plt.imshow(outputs[-1])
-            
-        outfile = 'Results/'+str(wavelength)+'_cutout_stacked.fits'
-        fits.writeto(outfile, outputs[-1].data, clobber = True)
-        
-        plt.close('all')
+    try:
+        outputs.append(np.ma.sum(image_list, axis=0))
+    except:
+        pass
+
+    plt.figure()
+    plt.imshow(outputs[-1])
+
+    outfile = 'Results/'+str(wavelength)+'_cutout_stacked.fits'
+    fits.writeto(outfile, outputs[-1].data, clobber = True)
 
 
 #all working, next step is to test the script with furthest galaxies removed

@@ -41,10 +41,6 @@ pos_angle = [360. - x for x in pos_angle1]
 width = 5.
 
 
-x_position = []
-y_position = []
-cutouts = []
-
 #------------------------------------------------------------------------------
 #IMPORT REQUIRED MAPS + BACKGROUND SUBTRACT
 #------------------------------------------------------------------------------
@@ -116,12 +112,12 @@ for num in bar(range(len(source_names))):
 
 
 
-    for wavelength in [250]: #change according to wavelength! need to sort this out...
+ #   for wavelength in [250]: #change according to wavelength! need to sort this out...
         data_cut = fits.open('Data/Rescaled/'+name+'_SPIRE_'+str(wavelength)+'_rescaled_kpc.fits')
 
     #get the galaxy central pixels from the header files
-    x_coords = data_cut[0].header['CRPIX1']
-    y_coords = data_cut[0].header['CRPIX2']
+        x_coords = data_cut[0].header['CRPIX1']
+        y_coords = data_cut[0].header['CRPIX2']
 
     #append information to empty lists
     #x_position.append(x_coords)
@@ -130,15 +126,15 @@ for num in bar(range(len(source_names))):
     #x_pos = x_position[num]
     #y_pos = y_position[num]
 
-    fin_data = data_cut[0].data     
+        fin_data = data_cut[0].data     
 
 
 
     #make the cutouts
-    cutouts = Cutout2D(fin_data, (x_coords, y_coords), (60, 60), mode = 'partial', fill_value = 0.)
+        cutouts = Cutout2D(fin_data, (x_coords, y_coords), (60, 60), mode = 'partial', fill_value = 0.)
 
     #save the resulting cutouts as fits files
-    fits.writeto('Data/Cutouts/'+name+'_'+str(wavelength)+'_cutout.fits', cutouts.data,  clobber = True)
+        fits.writeto('Data/Cutouts/'+name+'_'+str(wavelength)+'_cutout.fits', cutouts.data,  clobber = True)
       
 #WORKS UP TO HERE 17:30 21/03/17
 
@@ -177,3 +173,8 @@ for wavelength in [250, 350, 500]:
 #all working, next step is to test the script with furthest galaxies removed
 #to see how much better the resulting maps look
 #also! - sort out header files, i.e. use mHdr/project? 
+
+
+
+
+
